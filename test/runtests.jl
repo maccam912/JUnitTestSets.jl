@@ -16,7 +16,7 @@ expected_result = """
   <testcase id="1 == 1" name="1 == 1"/>
   <testcase id="1 == 2" name="1 == 2">
     <failure message="Failure" type="FAIL">test failed: 1 == 2
-Source: #= /Users/maccam912/.julia/dev/JUnitTestSets/test/runtests.jl:6 =#</failure>
+Source: #= $(@__FILE__):6 =#</failure>
   </testcase>
 </testsuite>
 """
