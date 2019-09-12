@@ -1,10 +1,14 @@
 using JUnitTestSets, Test
 
+function myadd(a,b)
+    return a+b
+end
+
 function get_ts()
     ts = @junittestset JUnitTestSet "JUnitTestSets.jl" begin
         @test 1 == 1
         @test 1 == 2
-        @test reverse(13) == 31
+        @test myadd(1,2) == 3
     end
     return ts
 end
@@ -19,6 +23,7 @@ expected_result = """
     <failure message="Failure" type="FAIL">test failed: 1 == 2
 Source: #= $(@__FILE__):6 =#</failure>
   </testcase>
+  <testcase id="myadd(1,2) == 3" name="myadd(1,2) == 3"/>
 </testsuite>
 """
 
