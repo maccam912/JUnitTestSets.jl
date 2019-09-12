@@ -4,6 +4,7 @@ function get_ts()
     ts = @junittestset JUnitTestSet "JUnitTestSets.jl" begin
         @test 1 == 1
         @test 1 == 2
+        @test reverse(13) == 31
     end
     return ts
 end

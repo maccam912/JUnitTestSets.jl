@@ -9,12 +9,25 @@ end
 
 function toXML(r::Test.Fail)
     xroot = new_element("testcase")
-    set_attribute(xroot, "id", r.data)
-    set_attribute(xroot, "name", r.data)
+    data = isnothing(r.data) ? "" : string(r.data)
+    set_attribute(xroot, "id", data)
+    set_attribute(xroot, "name", data)
     failure = new_element("failure")
     set_attribute(failure, "message", "Failure")
     set_attribute(failure, "type", "FAIL")
-    set_content(failure, "test failed: $(string(r.data))\nSource: $(r.source)")
+    set_content(failure, "test failed: $(string(data))\nSource: $(r.source)")
+    add_child(xroot, failure)
+    return xroot
+end
+
+function toXML(r::Test.Error)
+    xroot = new_element("testcase")
+    set_attribute(xroot, "id", r.orig_expr)
+    set_attribute(xroot, "name", r.value)
+    failure = new_element("failure")
+    set_attribute(failure, "message", "Error")
+    set_attribute(failure, "type", "ERROR")
+    set_content(failure, "error when running test: $(string(r.backtrace))\nSource: $(r.source)")
     add_child(xroot, failure)
     return xroot
 end

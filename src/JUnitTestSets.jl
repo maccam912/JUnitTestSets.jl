@@ -47,10 +47,10 @@ function do_junittest(result::Test.ExecutionResult, orig_expr)
             value ? Test.Pass(:test, orig_expr, result.data, value) :
                     Test.Fail(:test, orig_expr, result.data, value, result.source)
         else
-            Test.Error(:test_nonbool, orig_expr, value, nothing, result.source)
+            Test.Error(:test_nonbool, orig_expr, value, nothing, result.source * s)
         end
     else
-        @assert isa(result, Threw)
+        @assert isa(result, Test.Threw)
         testres = Test.Error(:test_error, orig_expr, result.exception, result.backtrace, result.source)
     end
     Test.record(Test.get_testset(), testres)
@@ -61,7 +61,7 @@ Cassette.@context JUnitCtx
 Cassette.overdub(::JUnitCtx, ::typeof(Test.do_test), args...) = do_junittest(args...)
 
 macro junittestset(args...)
-    :(Cassette.overdub(JUnitCtx(), () -> Test.@testset($(args...))))
+    :(Cassette.overdub(JUnitCtx(metadata = Main), () -> Test.@testset($(args...))))
 end
 
 end # module
