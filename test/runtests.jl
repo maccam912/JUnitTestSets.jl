@@ -1,4 +1,4 @@
-using Revise, JUnitTestSets, Test
+using JUnitTestSets, Test
 
 function myadd(a,b)
     return a+b
