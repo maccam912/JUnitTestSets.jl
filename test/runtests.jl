@@ -31,5 +31,5 @@ Source: $(@__FILE__):13</failure>
 """
 
 @testset "JUnitTestSets.jl testing itself" begin
-    @test expected_result == string(report)
+    @test replace(expected_result, r"time=\"[0-9].[e\-0-9]+\""=>"time=\"0\"") == replace(string(report), r"time=\"[0-9].[e\-0-9]+\""=>"time=\"0\"")
 end
