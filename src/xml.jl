@@ -1,41 +1,26 @@
 using LightXML
 
-function toXML(r::Test.Pass)
+function toXML(r::JTestResult)
     xroot = new_element("testcase")
-    set_attribute(xroot, "id", r.data)
-    set_attribute(xroot, "name", r.data)
+    set_attribute(xroot, "id", r.expr)
+    set_attribute(xroot, "name", r.expr)
+    set_attribute(xroot, "time", string(elapsed_seconds(r)))
+    if !r.result
+        failure = new_element("failure")
+        set_attribute(failure, "message", "Failure")
+        set_attribute(failure, "type", "FAIL")
+        set_content(failure, "test failed: $(string(r.expr))\nSource: $(r.file):$(r.line)")
+        add_child(xroot, failure)
+    end
     return xroot
 end
 
-function toXML(r::Test.Fail)
-    xroot = new_element("testcase")
-    data = isnothing(r.data) ? "" : string(r.data)
-    set_attribute(xroot, "id", data)
-    set_attribute(xroot, "name", data)
-    failure = new_element("failure")
-    set_attribute(failure, "message", "Failure")
-    set_attribute(failure, "type", "FAIL")
-    set_content(failure, "test failed: $(string(data))\nSource: $(r.source)")
-    add_child(xroot, failure)
-    return xroot
-end
-
-function toXML(r::Test.Error)
-    xroot = new_element("testcase")
-    set_attribute(xroot, "id", r.orig_expr)
-    set_attribute(xroot, "name", r.value)
-    failure = new_element("failure")
-    set_attribute(failure, "message", "Error")
-    set_attribute(failure, "type", "ERROR")
-    set_content(failure, "error when running test: $(string(r.backtrace))\nSource: $(r.source)")
-    add_child(xroot, failure)
-    return xroot
-end
 
 function toXML(ts::JUnitTestSet)
     xroot = typeof(ts.results[1]) == JUnitTestSet ? new_element("testsuites") : new_element("testsuite")
     set_attribute(xroot, "id", ts.id)
     set_attribute(xroot, "name", ts.name)
+    set_attribute(xroot, "time", ts.time.value / 1e9)
 
     for result in ts.results
         childnode = toXML(result)
